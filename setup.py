@@ -25,12 +25,12 @@ def find_version(*file_paths):
 
 
 setup(
-    name='keras-wedge-dropout',
+    name='keras-sift',
     version=find_version('keras_sift', '__init__.py'),
     packages=find_packages(),
     url='https://github.com/LanceNorskog/keras-sift',
     license='MIT',
-    author='Dmytro Mishkin',
+    author='Dmytro Mishkin/Lance Norskog',
     author_email='LanceNorskog@users.noreply.github.com',
     description='SIFT implemented in Keras',
     long_description=read_file('README.md'),
