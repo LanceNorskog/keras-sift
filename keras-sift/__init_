@@ -1,4 +1,0 @@
-from .keras_sift import a_func
-from .functions import b_func
-
-__version__ = '0.1.0'
