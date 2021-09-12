@@ -107,7 +107,7 @@ def get_sift_model(inputs, img_rows = 65, num_ang_bins = 4, num_spatial_bins = 4
     l2norm =  Lambda(L2norm)(flatten)
     clipping =  Lambda(lambda x: K.minimum(x,clipval))(l2norm)
     l2norm_again = Lambda(L2norm)(clipping)
-    l2norm_again = Reshape((64, 1))(l2norm_again)
+    # l2norm_again = Reshape((64, 1))(l2norm_again)
     return l2norm_again
 
 def getPoolingKernel(kernel_size = 25):
