@@ -141,7 +141,9 @@ def initializeSIFT(model):
     return model
 
 ''' Can be used as the first layer of a larger model '''
-def getSIFTModel(inputs, patch_size = 65, num_ang_bins = 4, num_spatial_bins = 4):
+def getSIFTModel(inputs=None, patch_size = 65, num_ang_bins = 4, num_spatial_bins = 4):
+    if inputs is None:
+        inputs = tf.keras.layers.Input(shape=(patch_size, patch_size, 1))
     # assert shape is n, n, 1
     kerassift = get_sift_model(inputs, img_rows=patch_size, num_ang_bins=num_ang_bins, num_spatial_bins=num_spatial_bins)
     model = Model(inputs=inputs, outputs=kerassift)
