@@ -64,10 +64,10 @@ def get_bin_weight_kernel_size_and_stride(patch_size, num_spatial_bins):
 def get_sift_model(feed, img_rows = 65, num_ang_bins = 4, num_spatial_bins = 4, clipval = 0.2):
     gk = CircularGaussKernel(kernlen=img_rows)
     gauss_kernel = K.variable(value=gk)
-    grad_x = Conv2D(1, (3, 1), name = 'gx_' + str(getrandbits(20))(feed)
+    grad_x = Conv2D(1, (3, 1), name = 'gx_' + str(getrandbits(20)))(feed)
     grad_x = ZeroPadding2D(padding=(1, 0))(grad_x)
     grad_x = Reshape((img_rows, img_rows))(grad_x)
-    grad_y = Conv2D(1, (1, 3), name = 'gy_' + str(getrandbits(20))(feed)
+    grad_y = Conv2D(1, (1, 3), name = 'gy_' + str(getrandbits(20)))(feed)
     grad_y = ZeroPadding2D(padding=(0,1))(grad_y)
     grad_y = Reshape((img_rows, img_rows))(grad_y)
     grad_x_2 = Lambda(lambda x: x ** 2)(grad_x)
