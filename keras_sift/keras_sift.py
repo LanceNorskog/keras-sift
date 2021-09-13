@@ -60,10 +60,10 @@ def get_bin_weight_kernel_size_and_stride(patch_size, num_spatial_bins):
     bin_weight_kernel_size = int(2 * bin_weight_stride - 1);
     return bin_weight_kernel_size, bin_weight_stride
 
-def get_sift_model(inputs, img_rows = 65, num_ang_bins = 4, num_spatial_bins = 4, clipval = 0.2):
+def get_sift_model(top, img_rows = 65, num_ang_bins = 4, num_spatial_bins = 4, clipval = 0.2):
     gk = CircularGaussKernel(kernlen=img_rows)
     gauss_kernel = K.variable(value=gk)
-    grad_x = Conv2D(1, (3, 1), name = 'gx')(inputs)
+    grad_x = Conv2D(1, (3, 1), name = 'gx')(top)
     grad_x = ZeroPadding2D(padding=(1, 0))(grad_x)
     grad_x = Reshape((img_rows, img_rows))(grad_x)
     grad_y = Conv2D(1, (1, 3), name = 'gy')(inputs)
@@ -141,11 +141,12 @@ def initializeSIFT(model):
     return model
 
 ''' Can be used as the first layer of a larger model '''
-def getSIFTModel(inputs=None, patch_size = 65, num_ang_bins = 4, num_spatial_bins = 4):
+def getSIFTModel(inputs=None, top=None, patch_size = 65, num_ang_bins = 4, num_spatial_bins = 4):
     if inputs is None:
         inputs = tf.keras.layers.Input(shape=(patch_size, patch_size, 1))
+        top = inputs
     # assert shape is n, n, 1
-    kerassift = get_sift_model(inputs, img_rows=patch_size, num_ang_bins=num_ang_bins, num_spatial_bins=num_spatial_bins)
+    kerassift = get_sift_model(top, img_rows=patch_size, num_ang_bins=num_ang_bins, num_spatial_bins=num_spatial_bins)
     model = Model(inputs=inputs, outputs=kerassift)
     model = initializeSIFT(model)
     model.trainable = False
