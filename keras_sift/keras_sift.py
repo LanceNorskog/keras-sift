@@ -4,6 +4,7 @@ import time
 import numpy as np
 import tensorflow as tf
 import math
+from random import getrandbits
 
 from keras import backend as K
 from keras.models import Model
@@ -63,10 +64,10 @@ def get_bin_weight_kernel_size_and_stride(patch_size, num_spatial_bins):
 def get_sift_model(feed, img_rows = 65, num_ang_bins = 4, num_spatial_bins = 4, clipval = 0.2):
     gk = CircularGaussKernel(kernlen=img_rows)
     gauss_kernel = K.variable(value=gk)
-    grad_x = Conv2D(1, (3, 1), name = 'gx')(feed)
+    grad_x = Conv2D(1, (3, 1), name = 'gx_' + str(getrandbits(20))(feed)
     grad_x = ZeroPadding2D(padding=(1, 0))(grad_x)
     grad_x = Reshape((img_rows, img_rows))(grad_x)
-    grad_y = Conv2D(1, (1, 3), name = 'gy')(feed)
+    grad_y = Conv2D(1, (1, 3), name = 'gy_' + str(getrandbits(20))(feed)
     grad_y = ZeroPadding2D(padding=(0,1))(grad_y)
     grad_y = Reshape((img_rows, img_rows))(grad_y)
     grad_x_2 = Lambda(lambda x: x ** 2)(grad_x)
@@ -98,7 +99,7 @@ def get_sift_model(feed, img_rows = 65, num_ang_bins = 4, num_spatial_bins = 4, 
         ori0 = Reshape((img_rows, img_rows, 1))(ori0)
         bin_weight = Conv2D(1, (bin_weight_kernel_size, bin_weight_kernel_size), 
                                    strides = [bin_weight_stride, bin_weight_stride], 
-                                   name = 'bin_weight'+str(i))(ori0)
+                                   name = 'bin_weight_' + str(getrandbits(20)))(ori0)
         bin_weight = Flatten()(bin_weight)
         ang_bins.append(bin_weight)
     
@@ -122,10 +123,10 @@ def initializeSIFT(model):
     for layer in model.layers:
         l_name = layer.get_config()['name']
         w_all = layer.get_weights()
-        if l_name == 'gy':
+        if l_name[0:2] == 'gy':
             new_weights = np.array([-1, 0, 1], dtype=np.float32)
             new_weights = np.reshape(new_weights, w_all[0].shape)
-        elif l_name == 'gx':
+        elif l_name[0:2] == 'gx':
             new_weights = np.array([-1, 0, 1], dtype=np.float32)
             new_weights = np.reshape(new_weights, w_all[0].shape)
         elif 'bin_weight' in l_name:
