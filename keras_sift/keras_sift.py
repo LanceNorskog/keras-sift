@@ -18,7 +18,7 @@ def Concat(x):
     return tf.concat(x, axis=-1)
 
 def L2norm(x):
-    return x / K.sqrt(K.sum(K.square(x), axis=-1, keepdims=True))
+    return x / (0.000001 + K.sqrt(K.sum(K.square(x), axis=-1, keepdims=True)))
 
 def MOD(x,a):
     return tf.math.mod(x,a)
