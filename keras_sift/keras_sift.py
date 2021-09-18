@@ -61,7 +61,7 @@ def get_bin_weight_kernel_size_and_stride(patch_size, num_spatial_bins):
     bin_weight_kernel_size = int(2 * bin_weight_stride - 1);
     return bin_weight_kernel_size, bin_weight_stride
 
-def get_sift_model(feed, img_rows = 65, num_ang_bins = 4, num_spatial_bins = 4, clipval = 0.2):
+def get_sift_model(feed, img_rows = 65, num_ang_bins = 8, num_spatial_bins = 4, clipval = 0.2):
     gk = CircularGaussKernel(kernlen=img_rows)
     gauss_kernel = tf.constant(value=gk, dtype='float32')
     grad_x = Conv2D(1, (3, 1), name = 'gx_' + str(getrandbits(20)))(feed)
@@ -104,12 +104,11 @@ def get_sift_model(feed, img_rows = 65, num_ang_bins = 4, num_spatial_bins = 4, 
         ang_bins.append(bin_weight)
     
     ang_bin_merged = Concatenate()(ang_bins)
-    flatten = ang_bin_merged
-    l2norm =  Lambda(L2norm)(flatten)
+    l2norm =  Lambda(L2norm)(ang_bin_merged)
     clipping =  Lambda(lambda x: K.minimum(x,clipval))(l2norm)
     l2norm_again = Lambda(L2norm)(clipping)
-    # l2norm_again = Reshape((64, 1))(l2norm_again)
-    return l2norm_again
+    conv2d = Reshape((num_ang_bins, num_spatial_bins, 1))(l2norm_again)
+    return conv2d
 
 def getPoolingKernel(kernel_size = 25):
     step = 1. / (1e-5 + float(kernel_size // 2))
