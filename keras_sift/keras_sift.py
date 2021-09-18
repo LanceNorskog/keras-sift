@@ -109,7 +109,7 @@ def get_sift_model(feed, img_rows = 65, num_ang_bins = 8, num_spatial_bins = 4, 
     l2norm =  Lambda(L2norm)(ang_bins_merged)
     clipping =  Lambda(lambda x: K.minimum(x,clipval))(l2norm)
     l2norm_again = Lambda(L2norm)(clipping)
-    conv2d = Reshape((num_ang_bins, num_spatial_bins, 1))(l2norm_again)
+    conv2d = Reshape((num_ang_bins, num_spatial_bins * num_spatial_bins, 1))(l2norm_again)
     return conv2d
 
 def getPoolingKernel(kernel_size = 25):
