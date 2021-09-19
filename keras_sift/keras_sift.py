@@ -100,12 +100,10 @@ def get_sift_model(feed, img_rows = 65, num_ang_bins = 8, num_spatial_bins = 4, 
         bin_weight = Conv2D(1, (bin_weight_kernel_size, bin_weight_kernel_size), 
                                    strides = [bin_weight_stride, bin_weight_stride], 
                                    name = 'bin_weight_' + str(getrandbits(20)))(ori0)
-        print('bin_weight', bin_weight)
         bin_weight = Flatten()(bin_weight)
         ang_bins.append(bin_weight)
     
     ang_bins_merged = Concatenate()(ang_bins)
-    print('ang_bins_merged', ang_bins_merged)
     l2norm =  Lambda(L2norm)(ang_bins_merged)
     clipping =  Lambda(lambda x: K.minimum(x,clipval))(l2norm)
     l2norm_again = Lambda(L2norm)(clipping)
